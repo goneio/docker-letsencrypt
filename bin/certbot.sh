@@ -17,6 +17,8 @@ echo "Waiting for nginx & haproxy to be ready..."
 sleep 10;
 echo "Done!"
 mkdir -p /opt/www
+mkdir -p /etc/letsencrypt/live
+mkdir -p /certs
 
 # Create or renew certificates.
 for DOMAINS in "${CERTS[@]}"; do
@@ -39,7 +41,6 @@ done
 
 # Combine private key and full certificate chain for HAproxy.
 
-mkdir -p /etc/letsencrypt/live
 cd /etc/letsencrypt/live
 for domain in *; do
 	cat "$domain/privkey.pem" "$domain/fullchain.pem" > "/certs/$domain.pem"
