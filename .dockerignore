@@ -1,1 +1,7 @@
 /etc/nginx.conf
+jenkinsfile
+Dockerfile
+Makefile
+README.md
+.gitignore
+docker-compose.yml
