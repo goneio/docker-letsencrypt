@@ -14,11 +14,13 @@ mkdir -p /opt/www
 CERTS=(${DOMAINS//;/ })
 
 echo "Waiting for nginx & haproxy to be ready..."
-sleep 30;
+sleep 10;
 echo "Done!"
+mkdir -p /opt/www
 
 # Create or renew certificates.
 for DOMAINS in "${CERTS[@]}"; do
+    ls -lah /opt/www
 	if certbot certonly \
 			--agree-tos \
 			--domains "$DOMAINS" \
@@ -34,9 +36,6 @@ for DOMAINS in "${CERTS[@]}"; do
 		fi
 	fi
 done
-
-echo "*** /var/log/letsencrypt/letsencrypt.log ***"
-cat /var/log/letsencrypt/letsencrypt.log
 
 # Combine private key and full certificate chain for HAproxy.
 
