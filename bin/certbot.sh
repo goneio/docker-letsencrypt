@@ -48,9 +48,10 @@ for domain in *; do
 		echo "Saving default certificate ($domain) as '_default.pem'."
 		cp "/certs/$domain.pem" /certs/_default.pem
 	fi
-	echo "SET certs_$domain " > redis_insert.txt
-	cat "/certs/$domain.pem" >> redis_insert.txt
-	cat redis_insert.txt | redis-cli -h $REDIS_POST -p $REDIS_PORT -n $REDIS_DATABASE --pipe
+	echo -n "SET certs:$domain " > redis_insert.txt
+	cat -n "/certs/$domain.pem" | base64 -w 0 >> redis_insert.txt
+	cat redis_insert.txt | redis-cli -h $REDIS_HOST -p $REDIS_PORT -n $REDIS_DATABASE --pipe
+	rm redis_insert.txt
 	echo "Written to redis";
 done
 
