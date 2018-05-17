@@ -1,4 +1,5 @@
-FROM alpine:3.5
+FROM alpine:3.6
+MAINTAINER Matthew Baggett <matthew@gone.io>
 
 RUN apk update \
     && apk upgrade \
@@ -10,6 +11,7 @@ RUN apk update \
         nginx \
         tini \
         wget \
+        redis \
     && rm -rf /var/cache/apk/*
 
 RUN update-ca-certificates
@@ -20,11 +22,11 @@ RUN wget -nv -O - "https://github.com/jwilder/dockerize/releases/download/v${DOC
 RUN ln -s /opt/letsencrypt/bin/certbot.sh /etc/periodic/daily/certbot
 
 ENV PATH="/opt/letsencrypt/bin:$PATH"
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
+ENV REDIS_DATABASE=0
 
 EXPOSE 80
-
-VOLUME /certs
-VOLUME /etc/letsencrypt
 
 ENTRYPOINT ["/sbin/tini", "--", "entrypoint.sh"]
 CMD ["run.sh"]

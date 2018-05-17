@@ -13,6 +13,10 @@ mkdir -p /opt/www
 # certificate are separated by comma (,).
 CERTS=(${DOMAINS//;/ })
 
+echo "Waiting for nginx & haproxy to be ready..."
+sleep 30;
+echo "Done!"
+
 # Create or renew certificates.
 for DOMAINS in "${CERTS[@]}"; do
 	if certbot certonly \
@@ -31,7 +35,12 @@ for DOMAINS in "${CERTS[@]}"; do
 	fi
 done
 
+echo "*** /var/log/letsencrypt/letsencrypt.log ***"
+cat /var/log/letsencrypt/letsencrypt.log
+
 # Combine private key and full certificate chain for HAproxy.
+
+mkdir -p /etc/letsencrypt/live
 cd /etc/letsencrypt/live
 for domain in *; do
 	cat "$domain/privkey.pem" "$domain/fullchain.pem" > "/certs/$domain.pem"
@@ -39,6 +48,10 @@ for domain in *; do
 		echo "Saving default certificate ($domain) as '_default.pem'."
 		cp "/certs/$domain.pem" /certs/_default.pem
 	fi
+	echo "SET certs_$domain " > redis_insert.txt
+	cat "/certs/$domain.pem" >> redis_insert.txt
+	cat redis_insert.txt | redis-cli -h $REDIS_POST -p $REDIS_PORT -n $REDIS_DATABASE --pipe
+	echo "Written to redis";
 done
 
 # Reload HAproxy.

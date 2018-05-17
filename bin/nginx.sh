@@ -6,4 +6,7 @@ mkdir -p /run/nginx
 
 dockerize -template /opt/letsencrypt/etc/nginx.tmpl.conf:/opt/letsencrypt/etc/nginx.conf
 
+echo "*** /opt/letsencrypt/etc/nginx.conf ***"
+cat /opt/letsencrypt/etc/nginx.conf
+
 exec nginx -c /opt/letsencrypt/etc/nginx.conf "$@"
