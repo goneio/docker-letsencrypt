@@ -4,7 +4,7 @@ prepare:
 	docker pull alpine:3.6
 
 build:
-	docker build --squash -t gone/docker-haproxy-letsencrypt --no-cache .
+	docker build --squash -t gone/haproxy-letsencrypt --no-cache .
 
 push:
-	docker push gone/docker-haproxy-letsencrypt
+	docker push gone/haproxy-letsencrypt
