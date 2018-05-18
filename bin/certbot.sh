@@ -14,7 +14,7 @@ mkdir -p /opt/www
 CERTS=(${DOMAINS//;/ })
 
 echo "Waiting for nginx & haproxy to be ready..."
-sleep 5;
+sleep 30;
 echo "Done!"
 mkdir -p /opt/www
 mkdir -p /etc/letsencrypt/live
