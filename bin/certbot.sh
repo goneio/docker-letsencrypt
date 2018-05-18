@@ -61,7 +61,7 @@ done
 
 # Reload HAproxy.
 if [[ -n "${HAPROXY_IMAGE+1}" ]]; then
-	for container in $(docker ps -f ancestor="$HAPROXY_IMAGE" -f status=running -f volume=/etc/letsencrypt -q); do
+	for container in $(docker ps -f ancestor="$HAPROXY_IMAGE" -f status=running -q); do
 		echo "Reloading HAproxy container: $container"
 		docker exec "$container" /reload.sh
 	done
