@@ -14,7 +14,7 @@ mkdir -p /opt/www
 CERTS=(${DOMAINS//;/ })
 
 echo "Waiting for nginx & haproxy to be ready..."
-sleep 10;
+sleep 5;
 echo "Done!"
 mkdir -p /opt/www
 mkdir -p /etc/letsencrypt/live
@@ -47,6 +47,10 @@ for domain in *; do
 	if [[ "$domain" = "$DEFAULT" ]]; then
 		echo "Saving default certificate ($domain) as '_default.pem'."
 		cp "/certs/$domain.pem" /certs/_default.pem
+		echo -n "SET certs:_default " > redis_insert.txt
+	    cat "/certs/_default.pem" | base64 -w 0 >> redis_insert.txt
+	    cat redis_insert.txt | redis-cli -h $REDIS_HOST -p $REDIS_PORT -n $REDIS_DATABASE --pipe
+	    rm redis_insert.txt
 	fi
 	echo -n "SET certs:$domain " > redis_insert.txt
 	cat "/certs/$domain.pem" | base64 -w 0 >> redis_insert.txt
