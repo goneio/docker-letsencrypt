@@ -6,7 +6,7 @@ set -e
 if [ -e /opt/letsencrypt/etc/global.env ]; then
 	. /opt/letsencrypt/etc/global.env
 fi
-
+rm -Rfv /opt/www
 mkdir -p /opt/www
 
 # Certificates are separated by semi-colon (;) or newline. Domains on each
